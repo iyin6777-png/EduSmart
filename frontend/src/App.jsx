@@ -50,6 +50,41 @@ const pricingPlans = [
   },
 ];
 
+const courseLibrary = [
+  {
+    title: 'Advanced Mathematics',
+    category: 'STEM',
+    lessons: 12,
+    duration: '4 weeks',
+    level: 'Beginner to Intermediate',
+    description: 'Algebra, trigonometry, functions, and exam strategies for mathematical reasoning.',
+  },
+  {
+    title: 'Biology Essentials',
+    category: 'Science',
+    lessons: 9,
+    duration: '3 weeks',
+    level: 'Secondary to University',
+    description: 'Cell biology, genetics, ecosystems, and practical lab preparation.',
+  },
+  {
+    title: 'World History',
+    category: 'Humanities',
+    lessons: 11,
+    duration: '5 weeks',
+    level: 'All levels',
+    description: 'Civilizations, revolutions, political movements, and historical analysis.',
+  },
+  {
+    title: 'English Literature',
+    category: 'Arts',
+    lessons: 8,
+    duration: '3 weeks',
+    level: 'Intermediate',
+    description: 'Poetry, essay writing, literary devices, and reading comprehension practice.',
+  },
+];
+
 const defaultDashboardState = {
   user: {
     name: 'Aisha Bello',
@@ -85,7 +120,7 @@ const defaultDashboardState = {
 
 function App() {
   const [view, setView] = useState('home');
-  const [authMode, setAuthMode] = useState('login');
+  const [authMode, setAuthMode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [dashboard, setDashboard] = useState(defaultDashboardState);
   const [loading, setLoading] = useState(false);
@@ -144,8 +179,9 @@ function App() {
 
       localStorage.setItem('edusmart-token', payload.token);
       setIsAuthenticated(true);
-      setView('dashboard');
+      setAuthMode('');
       setForm({ name: '', email: '', password: '' });
+      setView('My Courses');
       fetchDashboard(payload.token);
     } catch (err) {
       setError(err.message);
@@ -159,7 +195,20 @@ function App() {
     setIsAuthenticated(false);
     setView('home');
     setDashboard(defaultDashboardState);
+    setAuthMode('');
+    setError('');
   };
+
+  const renderNavActions = () => (
+    <div className="nav-actions">
+      <button className="btn btn-ghost" type="button" onClick={() => setAuthMode('login')}>
+        Login
+      </button>
+      <button className="btn btn-primary" type="button" onClick={() => setAuthMode('signup')}>
+        Sign up
+      </button>
+    </div>
+  );
 
   const renderLanding = () => (
     <>
@@ -176,14 +225,7 @@ function App() {
             ))}
           </nav>
 
-          <div className="nav-actions">
-            <button className="btn btn-ghost" type="button" onClick={() => setAuthMode('login')}>
-              Login
-            </button>
-            <button className="btn btn-primary" type="button" onClick={() => setAuthMode('signup')}>
-              Sign up
-            </button>
-          </div>
+          {renderNavActions()}
         </div>
       </header>
 
@@ -352,6 +394,306 @@ function App() {
     </>
   );
 
+  const renderPageContent = () => {
+    switch (view) {
+      case 'My Courses':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Learning hub</span>
+                <h2>My Courses</h2>
+              </div>
+              <button className="btn btn-primary" type="button">Browse catalog</button>
+            </div>
+
+            <div className="library-grid">
+              {courseLibrary.map((course) => (
+                <article key={course.title} className="library-card">
+                  <div className="library-badge">{course.category}</div>
+                  <h3>{course.title}</h3>
+                  <p>{course.description}</p>
+                  <div className="meta-row">
+                    <span>{course.lessons} lessons</span>
+                    <span>{course.duration}</span>
+                  </div>
+                  <div className="meta-row muted">
+                    <span>{course.level}</span>
+                  </div>
+                  <button className="btn btn-secondary full" type="button">Open course</button>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      case 'AI Tutor':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Study support</span>
+                <h2>AI Tutor</h2>
+              </div>
+            </div>
+            <div className="ai-layout">
+              <div className="prompt-box">
+                <h3>Ask your tutor</h3>
+                <textarea rows={6} defaultValue="Explain how to solve quadratic equations using factorization and the quadratic formula." />
+                <button className="btn btn-primary" type="button">Generate answer</button>
+              </div>
+              <div className="answer-box">
+                <h3>Suggested response</h3>
+                <ul>
+                  <li>First, rewrite the equation in standard form: ax² + bx + c = 0.</li>
+                  <li>Factor the expression when possible and set each factor equal to zero.</li>
+                  <li>If it cannot be factored, use the quadratic formula: x = (-b ± √(b² - 4ac)) / 2a.</li>
+                  <li>Check both roots in the original equation to verify accuracy.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+      case 'CBT Practice':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Exam readiness</span>
+                <h2>CBT Practice</h2>
+              </div>
+              <button className="btn btn-primary" type="button">Start timed mock</button>
+            </div>
+            <div className="practice-grid">
+              <div className="practice-card">
+                <h3>Mathematics Mock</h3>
+                <p>30 questions • 45 minutes</p>
+                <div className="progress-row"><span>Readiness</span><strong>87%</strong></div>
+                <div className="track"><div className="fill" style={{ width: '87%' }} /></div>
+              </div>
+              <div className="practice-card">
+                <h3>Physics Mock</h3>
+                <p>25 questions • 30 minutes</p>
+                <div className="progress-row"><span>Readiness</span><strong>74%</strong></div>
+                <div className="track"><div className="fill" style={{ width: '74%' }} /></div>
+              </div>
+            </div>
+          </div>
+        );
+      case 'Past Questions':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Revision archive</span>
+                <h2>Past Questions</h2>
+              </div>
+            </div>
+            <div className="question-list">
+              <div className="question-item">
+                <strong>WAEC Mathematics 2023</strong>
+                <small>40 questions • Paper 1</small>
+              </div>
+              <div className="question-item">
+                <strong>JAMB English 2022</strong>
+                <small>40 questions • Comprehension & vocabulary</small>
+              </div>
+              <div className="question-item">
+                <strong>NECO Biology 2021</strong>
+                <small>50 questions • Theory and objective</small>
+              </div>
+            </div>
+          </div>
+        );
+      case 'Assignments':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Submission tracker</span>
+                <h2>Assignments</h2>
+              </div>
+            </div>
+            <ul className="assignment-list big">
+              {dashboard.assignments.map((assignment) => (
+                <li key={assignment.title}>
+                  <div>
+                    <strong>{assignment.title}</strong>
+                    <small>{assignment.due}</small>
+                  </div>
+                  <span className="status-badge">{assignment.status}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      case 'Performance':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Academic tracker</span>
+                <h2>Performance</h2>
+              </div>
+            </div>
+            <div className="score-list big">
+              {dashboard.performance.map((item) => (
+                <div className="score-row" key={item.subject}>
+                  <span>{item.subject}</span>
+                  <div className="mini-track">
+                    <div className="fill" style={{ width: `${item.score}%` }} />
+                  </div>
+                  <strong>{item.score}%</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case 'Profile':
+        return (
+          <div className="page-panel">
+            <div className="panel-header">
+              <div>
+                <span className="eyebrow">Student account</span>
+                <h2>Profile</h2>
+              </div>
+            </div>
+            <div className="profile-card">
+              <div className="profile-avatar">AB</div>
+              <div>
+                <h3>{dashboard.user?.name}</h3>
+                <p>{dashboard.user?.email}</p>
+                <p>{dashboard.user?.level}</p>
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <div className="dashboard-main">
+            <header className="dashboard-header">
+              <div>
+                <span className="eyebrow">Welcome back</span>
+                <h1>{dashboard.user?.name || 'Student'}</h1>
+              </div>
+              <button className="btn btn-primary" type="button">+ New study session</button>
+            </header>
+
+            <section className="overview-grid">
+              <div className="overview-card large">
+                <div className="card-header-row">
+                  <h3>Learning progress</h3>
+                  <span className="chip">This week</span>
+                </div>
+
+                <div className="progress-panel">
+                  <div>
+                    <strong>76%</strong>
+                    <small>Completion rate</small>
+                  </div>
+                  <div className="track large-track">
+                    <div className="fill" style={{ width: '76%' }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="overview-card">
+                <div className="card-header-row">
+                  <h3>Upcoming exams</h3>
+                </div>
+                <ul className="list-stack">
+                  {dashboard.exams.map((exam) => (
+                    <li key={exam.title}>
+                      <span>{exam.title}</span>
+                      <strong>{exam.status}</strong>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            <section className="content-grid">
+              <div className="overview-card">
+                <div className="card-header-row">
+                  <h3>Available courses</h3>
+                  <span className="chip">{dashboard.courses.length} active</span>
+                </div>
+
+                <div className="course-grid">
+                  {dashboard.courses.map((course) => (
+                    <div className="course-tile" key={course.id}>
+                      <div className="course-topline">
+                        <span>{course.subject}</span>
+                        <strong>{course.progress}%</strong>
+                      </div>
+                      <h4>{course.title}</h4>
+                      <div className="track">
+                        <div className="fill" style={{ width: `${course.progress}%` }} />
+                      </div>
+                      <small>{course.lessons}</small>
+                      <p>Next: {course.next}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="overview-card">
+                <div className="card-header-row">
+                  <h3>Recent activity</h3>
+                </div>
+                <ul className="activity-list">
+                  {dashboard.activities.map((activity) => (
+                    <li key={activity.label}>
+                      <span className="dot" />
+                      <div>
+                        <strong>{activity.label}</strong>
+                        <small>{activity.time}</small>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            <section className="bottom-grid">
+              <div className="overview-card">
+                <div className="card-header-row">
+                  <h3>Assignments</h3>
+                </div>
+                <ul className="assignment-list">
+                  {dashboard.assignments.map((assignment) => (
+                    <li key={assignment.title}>
+                      <div>
+                        <strong>{assignment.title}</strong>
+                        <small>{assignment.due}</small>
+                      </div>
+                      <span className="status-badge">{assignment.status}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="overview-card">
+                <div className="card-header-row">
+                  <h3>Performance</h3>
+                </div>
+                <div className="score-list">
+                  {dashboard.performance.map((item) => (
+                    <div className="score-row" key={item.subject}>
+                      <span>{item.subject}</span>
+                      <div className="mini-track">
+                        <div className="fill" style={{ width: `${item.score}%` }} />
+                      </div>
+                      <strong>{item.score}%</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </div>
+        );
+    }
+  };
+
   const renderDashboard = () => (
     <div className="dashboard-shell">
       <aside className="sidebar">
@@ -373,127 +715,7 @@ function App() {
         <button className="btn btn-secondary full" type="button" onClick={handleLogout}>Log out</button>
       </aside>
 
-      <main className="dashboard-main">
-        <header className="dashboard-header">
-          <div>
-            <span className="eyebrow">Welcome back</span>
-            <h1>{dashboard.user?.name || 'Student'}</h1>
-          </div>
-          <button className="btn btn-primary" type="button">+ New study session</button>
-        </header>
-
-        <section className="overview-grid">
-          <div className="overview-card large">
-            <div className="card-header-row">
-              <h3>Learning progress</h3>
-              <span className="chip">This week</span>
-            </div>
-
-            <div className="progress-panel">
-              <div>
-                <strong>76%</strong>
-                <small>Completion rate</small>
-              </div>
-              <div className="track large-track">
-                <div className="fill" style={{ width: '76%' }} />
-              </div>
-            </div>
-          </div>
-
-          <div className="overview-card">
-            <div className="card-header-row">
-              <h3>Upcoming exams</h3>
-            </div>
-            <ul className="list-stack">
-              {dashboard.exams.map((exam) => (
-                <li key={exam.title}>
-                  <span>{exam.title}</span>
-                  <strong>{exam.status}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section className="content-grid">
-          <div className="overview-card">
-            <div className="card-header-row">
-              <h3>Available courses</h3>
-              <span className="chip">{dashboard.courses.length} active</span>
-            </div>
-
-            <div className="course-grid">
-              {dashboard.courses.map((course) => (
-                <div className="course-tile" key={course.id}>
-                  <div className="course-topline">
-                    <span>{course.subject}</span>
-                    <strong>{course.progress}%</strong>
-                  </div>
-                  <h4>{course.title}</h4>
-                  <div className="track">
-                    <div className="fill" style={{ width: `${course.progress}%` }} />
-                  </div>
-                  <small>{course.lessons}</small>
-                  <p>Next: {course.next}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="overview-card">
-            <div className="card-header-row">
-              <h3>Recent activity</h3>
-            </div>
-            <ul className="activity-list">
-              {dashboard.activities.map((activity) => (
-                <li key={activity.label}>
-                  <span className="dot" />
-                  <div>
-                    <strong>{activity.label}</strong>
-                    <small>{activity.time}</small>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section className="bottom-grid">
-          <div className="overview-card">
-            <div className="card-header-row">
-              <h3>Assignments</h3>
-            </div>
-            <ul className="assignment-list">
-              {dashboard.assignments.map((assignment) => (
-                <li key={assignment.title}>
-                  <div>
-                    <strong>{assignment.title}</strong>
-                    <small>{assignment.due}</small>
-                  </div>
-                  <span className="status-badge">{assignment.status}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="overview-card">
-            <div className="card-header-row">
-              <h3>Performance</h3>
-            </div>
-            <div className="score-list">
-              {dashboard.performance.map((item) => (
-                <div className="score-row" key={item.subject}>
-                  <span>{item.subject}</span>
-                  <div className="mini-track">
-                    <div className="fill" style={{ width: `${item.score}%` }} />
-                  </div>
-                  <strong>{item.score}%</strong>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
+      {renderPageContent()}
     </div>
   );
 
