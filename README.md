@@ -1,40 +1,43 @@
 # EduSmart
 
-EduSmart is a modern educational platform for secondary school and university students. It includes a polished landing page, secure student authentication, and a functional student dashboard built with React and an Express backend backed by SQLite.
+EduSmart is an educational platform for secondary school and university students. It includes a responsive landing page, student authentication, dashboard, and learning tools.
 
 ## Features
-- Royal blue, white, and purple design
-- Responsive landing page and dashboard
-- Student signup and login with secure password hashing
-- Persistent SQLite database
-- Dashboard with course overview, assignments, and academic performance
-- Navigation to Home, My Courses, AI Tutor, CBT Practice, Past Questions, Assignments, Performance, and Profile
+- Royal blue, white, and purple responsive interface
+- Student signup and login with password hashing and JWT authentication
+- SQLite persistence
+- Dashboard, course library, AI Tutor study-support interface, CBT practice, past questions, assignments, performance, and profile sections
 
 ## Tech stack
 - Frontend: React + Vite
 - Backend: Node.js + Express
 - Database: SQLite
-- Auth: bcrypt + JWT
+- Authentication: bcrypt + JWT
 
-## Quick start
+## Run locally
+Requires Node.js 20 or later.
 
-1. Install dependencies:
-   npm install
+```sh
+npm install
+cp backend/.env.example backend/.env
+```
 
-2. Start the app in development mode:
-   npm run dev
+Set a unique `JWT_SECRET` in `backend/.env`, then run:
 
-3. Open the frontend in your browser:
-   http://localhost:5173
+```sh
+npm run dev
+```
 
-The backend API runs on:
-http://localhost:5000
+Open http://localhost:5173. The backend health endpoint is http://localhost:5000/api/health.
 
-## Production build
+Build the frontend with `npm run build`; run the production server with `npm start`.
 
-npm run build
-npm run start
+## Deploy on Render
+The repository includes `render.yaml` for a single Render web service. In Render, choose **New → Blueprint**, connect `iyin6777-png/EduSmart`, and apply the blueprint. Render installs the npm dependencies, builds the frontend, starts the Express service, and provisions a persistent disk for SQLite. The blueprint generates a JWT secret; do not commit real secrets to the repository.
 
-## Notes
-- The app uses a persistent SQLite database stored in `backend/data/edusmart.db`.
-- Default environment configuration is included in `backend/.env.example` and `frontend/.env.example`.
+After deployment, Render displays the public service URL. The same service hosts both the frontend and `/api` endpoints. Check `<your-service-url>/api/health` to verify the API is healthy.
+
+A Render account and confirmation of the service creation are required to provision the public URL; this repository setup does not itself publish a live deployment.
+
+## AI Tutor and learning content
+The AI Tutor currently presents guided sample study material; it is not connected to an external AI provider. Course and activity content is sample content. Do not treat the sample course, exam, activity, assignment, or performance data as real student records.
