@@ -7,9 +7,12 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
-    "build": "npm run build --workspace frontend",
-    "start": "npm run start --workspace backend"
+    "dev": "concurrently -k -n api,web -c blue,green \"npm:dev --workspace @edusmart/backend\" \"npm:dev --workspace @edusmart/frontend\"",
+    "build": "npm run build --workspace @edusmart/frontend",
+    "start": "npm run start --workspace @edusmart/backend"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
